@@ -7,42 +7,43 @@
  */
 void insertion_sort_list(listint_t **list)
 {
-	listint_t *sorted = NULL;
-	listint_t *current = *list;
-	listint_t *next;
+	#include "sort.h"
+
+/**
+ * insertion_sort_list - Implementing the insertion sort algorithm
+ * @list: The list to sort
+ */
+
+void insertion_sort_list(listint_t **list)
+{
+	listint_t *current, *prev, *temp;
 
 	if (list == NULL || *list == NULL || (*list)->next == NULL)
 		return;
-	while (current != NULL)
+
+	current = (*list)->next;
+	while (current)
 	{
-		next = current->next;
-		current->prev = sorted;
-		current->next = NULL;
+		temp = current;
+		prev = current->prev;
 
-		if (sorted == NULL || sorted->n >= current->n)
+		while (prev && prev->n > temp->n)
 		{
-			current->next = sorted;
-			if (sorted != NULL)
-				sorted->prev = current;
-			sorted = current;
-		}
-		else
-		{
-			listint_t *tmp = sorted;
+			if (temp->next)
+				temp->next->prev = prev;
+			prev->next = temp->next;
+			temp->next = prev;
+			temp->prev = prev->prev;
+			prev->prev = temp;
 
-			while (tmp->next != NULL && tmp->next->n < current->n)
-				tmp = tmp->next;
-			current->next = tmp->next;
-			if (tmp->next != NULL)
-				tmp->next->prev = current;
-			tmp->next = current;
-			current->prev = tmp;
+			if (temp->prev)
+				temp->prev->next = temp;
+			else
+				*list = temp;
+
+			prev = temp->prev;
+			print_list(*list);
 		}
-		if (current->prev == NULL)
-			*list = current;
-		else
-			current->prev->next = current;
-		print_list(*list);
-		current = next;
+		current = current->next;
 	}
 }
